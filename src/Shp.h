@@ -1,3 +1,7 @@
+#ifndef SHP_H_INCLUDE
+
+#define SHP_H_INCLUDE
+
 #include "common.h"
 
 class Shp
@@ -16,3 +20,4 @@ private:
 	OGRFeatureDefn * defn;
 };
 
+#endif

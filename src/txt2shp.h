@@ -8,9 +8,7 @@ struct Options{
 	int x_column;
 	int y_column;
 
-	Options(int x, int y) :x_column(x), y_column(y){
-
-	}
+	Options(int x, int y) :x_column(x), y_column(y){}
 };
 
 CPLErr BatchTxt(char * idir, char * odir, Options opt);

@@ -16,7 +16,6 @@ OGRDataSource * VectorCreate( const char * pszFormat, const char * pszFilename, 
 	return poOGRDataSource;
 }
 
-
 void RegisterVector() {
 	OGRRegisterAll();
 }

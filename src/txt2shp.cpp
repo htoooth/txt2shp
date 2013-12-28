@@ -1,6 +1,7 @@
 #include "txt2shp.h"
 #include "Txt.h"
 #include "Shp.h"
+#include "ogrformat.h"
 
 bool CheckForDir(const char * file){
 	if (EQUAL(file, ".") || EQUAL(file, "..")){
@@ -63,14 +64,14 @@ OGRGeometry * GeometryFromRing(std::list<Point> & ring){
 	OGRLinearRing * poOGRRing = new OGRLinearRing();
 	OGRGeometry * poOGRGeometry = NULL;
 	OGRPolygon * polygon = new OGRPolygon();
+
 	std::list<Point>::iterator first = ring.begin();
 	for (std::list<Point>::iterator it = ring.begin(); it != ring.end(); it++){
 		poOGRRing->addPoint(it->x, it->y);
 	}
-
 	poOGRRing->addPoint(first->x, first->y);
-
 	polygon->addRingDirectly(poOGRRing);
+
 	poOGRGeometry = polygon;
 	return poOGRGeometry;
 }
@@ -91,11 +92,8 @@ CPLErr Txt2Shp(const char * txt, const char * shp, Options opt){
 CPLErr BatchTxt(char *idir, char * odir,Options opt){
 	char ** files = GetFiles(idir);
 	char ** shps = GetSources(odir,idir);
-
-	CSLPrint(files, NULL);
-	CSLPrint(shps, NULL);
-
-	OGRRegisterAll();
+    
+	RegisterVector();
 
 	CPLErr err = CE_None;
 
@@ -105,6 +103,10 @@ CPLErr BatchTxt(char *idir, char * odir,Options opt){
 			break;
 		}
 	}
+
+	printf("OK");
+
+	VectorClean();
 
 	CSLDestroy(files);
 	CSLDestroy(shps);

@@ -1,4 +1,6 @@
-#include <list>
+#ifndef TXT_H_INCLUDE
+
+#define TXT_H_INCLUDE
 
 #include "common.h"
 
@@ -29,4 +31,4 @@ private:
 
 };
 
-
+#endif

@@ -1,12 +1,11 @@
-#ifndef FORMAT_H_INCLUDE
+#ifndef OGRFORMAT_H_INCLUDE
 
-#define FORMAT_H_INCLUDE
+#define OGRFORMAT_H_INCLUDE
 
 #include "common.h"
 
+///注册矢量数据格式
 void RegisterVector();
-
-void RegisterRaster();
 
 ///获得矢量数据驱动
 OGRSFDriver * GetVectorDriver(const char * pszFormat);
@@ -14,7 +13,6 @@ OGRSFDriver * GetVectorDriver(const char * pszFormat);
 ///打开矢量数据集
 OGRDataSource * VectorOpen(const char * pszFilename,
                            GDALAccess eAccess);
-
 
 ///创建矢量数据集
 OGRDataSource * VectorCreate(const char * pszFormat,
@@ -26,4 +24,5 @@ void VectorClose(OGRDataSource * poDS);
 
 ///清除矢量数据信息
 void VectorClean();
+
 #endif

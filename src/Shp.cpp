@@ -10,7 +10,6 @@ Shp::Shp(const char * fileName) {
 Shp::~Shp() {
     if (ds != NULL) {
         VectorClose(ds);
-		VectorClean();
     }
 }
 

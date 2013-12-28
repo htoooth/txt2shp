@@ -2,13 +2,13 @@
 
 #define COMMON_H_INCLUDE
 
+#include <list>
+
 #include <cpl_vsi.h>
 #include <cpl_error.h>
 #include <cpl_csv.h>
-#include <cpl_progress.h>
 #include <cpl_string.h>
 #include <cpl_port.h>
-#include <cpl_time.h>
 #include <cpl_conv.h>
 
 #include <ogr_api.h>
@@ -17,6 +17,5 @@
 #include <ogrsf_frmts.h>
 #include <gdal.h>
 
-#include <string>
 
 #endif

@@ -1,5 +1,4 @@
 #include "Txt.h"
-#include <exception>
 
 const char * char2p(char c){
     return CPLSPrintf("%c", c);
