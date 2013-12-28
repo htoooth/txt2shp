@@ -1,13 +1,13 @@
 #txt2shp
-This app convert x,y of text file to polygon of esri shape file. 
+txt2shp is simple tool that convert x,y of text file to polygon of esri shape file. 
 
 ## Goal
 This app must run in internet. And alive self without any people.
 
 ## Installation
-You must install premake4 make premake4.exe in you system path. Then you type `premake4 vs2010` to generate `vs2010 project file` and `premake4 gmake` to generate `makefile` in `prj` directory. Before compile txt2shp, you make some variables in your system environment variable.
+You must install premake4 make premake4.exe in you system path. Then you type `premake4 vs2010` to generate `vs2010 project file` and `premake4 gmake` to generate `makefile` in `prj` directory. Before compile txt2shp, you make three variables in your system environment variable.
 
-` GDAL_I is gdal's lib name. windows must be gdal_i and linux gdal.`
+` GDAL_I is gdal's lib name. windows must be gdal_i and linux is gdal.`
 
 ` GDALINC is gdal's include directory.`
 
@@ -17,8 +17,6 @@ then,`cd proj`,type `make config=release all` to generate txt2shp in bin/. And i
 
 ## Getting Started
 you can type txt2shp, here are some usage:
-
-
 
 	Usage: txt2shp  -i input directory
 					-o output directory
@@ -31,11 +29,8 @@ you can type txt2shp, here are some usage:
 	Example:
 	 txt2shp -i you_dir -o you_dir -x 2 -y 4
 
-
-
-
 ## About
-GDAL,git and other open source soft.
+Thanks to GDAL, Git and other open source softs.
 
 ## Copyright
-MIT Lisense
+This app is belong to htoo. If you want to change some code, please let me know. Note you have no right to change code but you can use binary file.
