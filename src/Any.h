@@ -7,7 +7,7 @@
 class Any
 {
 public:
-	Any(const char * name,const char * format);
+	Any(const char * name, const char * format);
 	~Any();
 
 	void AddGeometry(OGRGeometry * geo);

@@ -7,7 +7,7 @@
 class Txt
 {
 public:
-	Txt(const char * file,int x,int y);
+	Txt(const char * file, int x, int y);
 	~Txt();
 	std::list<Point> getRing();
 
