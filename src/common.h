@@ -18,6 +18,7 @@
 #include <gdal.h>
 
 #include "Option.h"
+#include "ogrformat.h"
 
 typedef OGRPoint Point;
 

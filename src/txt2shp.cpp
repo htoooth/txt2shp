@@ -3,18 +3,25 @@
 #include "Any.h"
 #include "ogrformat.h"
 
-bool CheckForDir(const char * file){
+bool CheckForFile(const char * file){
 	if (EQUAL(file, ".") || EQUAL(file, "..")){
-		return true;
+		return false;
 	}
-	return false;
+	return true;
+}
+
+bool CheckForExtension(const char * file,const char * ext){
+	if (EQUAL(CPLGetExtension(file), "") || !EQUAL(CPLGetExtension(file),ext)){
+		return false;
+	}
+	return true;
 }
 
 char ** GetFilesName(char * dir){
 	char ** file = VSIReadDir(dir);
 	char ** result = NULL;
 	for (int i = 0; i < CSLCount(file); i++){
-		if (!CheckForDir(file[i])){
+		if (CheckForFile(file[i]) && CheckForExtension(file[i],"txt")){
 			result = CSLAddString(result, file[i]);
 		}
 	}
@@ -73,7 +80,6 @@ OGRGeometry * GeometryFromRing(std::list<Point> & ring){
 	return ogrGeometry;
 }
 
-
 CPLErr Txt2Any(const char * txt, const char * shp, Option opt){
 	Txt txtfile(txt, opt.x_column, opt.y_column);
 	std::list<Point> ring = txtfile.getRing();
@@ -90,8 +96,6 @@ CPLErr BatchTxt(char *idir, char * odir,Option opt){
 	char ** files = GetFiles(idir);
 	char ** shps = GetSources(odir,files);
     
-	RegisterVector();
-
 	CPLErr err = CE_None;
 
 	for (int i = 0; i < CSLCount(files); i++){
@@ -102,8 +106,6 @@ CPLErr BatchTxt(char *idir, char * odir,Option opt){
 	}
 
 	printf("OK");
-
-	VectorClean();
 
 	CSLDestroy(files);
 	CSLDestroy(shps);
