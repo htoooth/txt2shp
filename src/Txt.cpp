@@ -21,6 +21,9 @@ Txt::Txt(const char * fileName, int x, int y): x(x), y(y)
 		const char * first = CPLReadLine(fp);
 		seperator = CSVDetectSeperator(first);
 		fields = CSLTokenizeString2(first, char2p(seperator), CSLT_HONOURSTRINGS);
+        // auto detect x,y index
+		x = CSLFindString(fields,"x");
+		y = CSLFindString(fields,"y");
 	}
 }
 
