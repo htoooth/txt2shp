@@ -6,6 +6,8 @@ void Usage(){
 		"               -o <output directory>\n"
 		"               -x <the column index of x coordination >\n"
 		"               -y <the column index of y coordination >\n"
+		"               -g <geometry type:1 is point,2 is line, 3 is polygon>\n"
+		"               -f <output file format>\n"
 		"\nNote:\n"
 		"The column index start 0, so if the x coordination column number is 3 and y is 5,\n"
 		"you will set x with 2 and y is 4.\n "
@@ -19,7 +21,7 @@ void Usage(){
 int main(int argc,char ** argv){
 	char * iDir = NULL;
 	char * oDir = NULL;
-	Options opt(1,2);
+	Option opt(1,2);
 	for (int i = 1; i < argc; ++i) {
 		if (EQUAL(argv[i],"-i")) {
 			iDir = argv[++i];
@@ -32,6 +34,12 @@ int main(int argc,char ** argv){
 		}
 		else if (EQUAL(argv[i], "-y")){
 			opt.y_column = atoi(argv[++i]);
+		}
+		else if (EQUAL(argv[i], "-f")){
+			opt.format = argv[++i];
+		}
+		else if (EQUAL(argv[i], "-g")){
+			opt.geoType = atoi(argv[++i]);
 		}
 		else {
 			Usage();

@@ -17,5 +17,8 @@
 #include <ogrsf_frmts.h>
 #include <gdal.h>
 
+#include "Option.h"
+
+typedef OGRPoint Point;
 
 #endif

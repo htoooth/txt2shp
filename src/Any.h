@@ -4,11 +4,11 @@
 
 #include "common.h"
 
-class Shp
+class Any
 {
 public:
-	Shp(const char * name);
-	~Shp();
+	Any(const char * name,const char * format);
+	~Any();
 
 	void AddGeometry(OGRGeometry * geo);
 
@@ -18,6 +18,7 @@ private:
 	OGRDataSource * ds;
 	OGRLayer * layer;
 	OGRFeatureDefn * defn;
+	char * format;
 };
 
 #endif

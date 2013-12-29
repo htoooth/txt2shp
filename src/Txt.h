@@ -4,15 +4,6 @@
 
 #include "common.h"
 
-struct Point{
-	double x;
-	double y;
-
-	Point(double x, double y) :x(x), y(y){
-
-	}
-};
-
 class Txt
 {
 public:

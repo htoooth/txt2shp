@@ -1,6 +1,6 @@
 #include "txt2shp.h"
 #include "Txt.h"
-#include "Shp.h"
+#include "Any.h"
 #include "ogrformat.h"
 
 bool CheckForDir(const char * file){
@@ -50,55 +50,52 @@ char ** GetBaseFiles(char ** files){
 	return result;
 }
 
-char ** GetSources(char * dir,char * idir){
-	char ** files = GetFilesName(idir);
+char ** GetSources(char * dir,char ** files){
 	char ** baseFiles = GetBaseFiles(files);
 	char ** sources = GetFilesPath(dir, baseFiles);
 
-	CSLDestroy(files);
 	CSLDestroy(baseFiles);
 	return sources;
 }
 
 OGRGeometry * GeometryFromRing(std::list<Point> & ring){
-	OGRLinearRing * poOGRRing = new OGRLinearRing();
-	OGRGeometry * poOGRGeometry = NULL;
-	OGRPolygon * polygon = new OGRPolygon();
+	OGRLinearRing * ogrRing = new OGRLinearRing();
+	OGRGeometry * ogrGeometry = NULL;
+	OGRPolygon * ogrPolygon = new OGRPolygon();
 
 	std::list<Point>::iterator first = ring.begin();
 	for (std::list<Point>::iterator it = ring.begin(); it != ring.end(); it++){
-		poOGRRing->addPoint(it->x, it->y);
+		ogrRing->addPoint(it->getX(), it->getY());
 	}
-	poOGRRing->addPoint(first->x, first->y);
-	polygon->addRingDirectly(poOGRRing);
+	ogrPolygon->addRingDirectly(ogrRing);
 
-	poOGRGeometry = polygon;
-	return poOGRGeometry;
+	ogrGeometry = ogrPolygon;
+	return ogrGeometry;
 }
 
 
-CPLErr Txt2Shp(const char * txt, const char * shp, Options opt){
+CPLErr Txt2Any(const char * txt, const char * shp, Option opt){
 	Txt txtfile(txt, opt.x_column, opt.y_column);
 	std::list<Point> ring = txtfile.getRing();
 
 	OGRGeometry * geo = GeometryFromRing(ring);
 
-	Shp shpfile(shp);
+	Any shpfile(shp,opt.format);
 	shpfile.AddGeometry(geo);
 	
 	return CE_None;
 }
 
-CPLErr BatchTxt(char *idir, char * odir,Options opt){
+CPLErr BatchTxt(char *idir, char * odir,Option opt){
 	char ** files = GetFiles(idir);
-	char ** shps = GetSources(odir,idir);
+	char ** shps = GetSources(odir,files);
     
 	RegisterVector();
 
 	CPLErr err = CE_None;
 
 	for (int i = 0; i < CSLCount(files); i++){
-		err = Txt2Shp(files[i], shps[i],opt);
+		err = Txt2Any(files[i], shps[i],opt);
 		if (err != CE_None){
 			break;
 		}

@@ -1,5 +1,7 @@
 #include "Txt.h"
 
+/// convert char to char point
+/// char to char*
 const char * char2p(char c){
     return CPLSPrintf("%c", c);
 }
@@ -29,9 +31,7 @@ std::list<Point> Txt::getRing(){
 	std::list<Point> ring;
 	for (;;){
 		Point * point = ReadOnePoint();
-		if (point == NULL) {
-			break;
-		}
+		if (point == NULL) { break; }
 		ring.push_back(Point(*point));
 		delete point;
 	}
