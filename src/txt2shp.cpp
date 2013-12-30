@@ -2,6 +2,7 @@
 #include "Txt.h"
 #include "Any.h"
 #include "ogrformat.h"
+#include "ScopeGuard.h"
 
 bool CheckForFile(const char * file)
 {
@@ -26,7 +27,9 @@ bool CheckForExtension(const char * file, const char * ext)
 char ** GetFilesName(char * dir)
 {
 	char ** file = VSIReadDir(dir);
-	char ** result = NULL;
+	ON_SCOPE_EXIT([&]{CSLDestroy(file); });
+
+	char ** result = nullptr;
 
 	for (int i = 0; i < CSLCount(file); i++)
 	{
@@ -41,13 +44,13 @@ char ** GetFilesName(char * dir)
 
 const char * GetAbsPath(char * dir, char * fileName)
 {
-	const char * absPath = CPLFormFilename(dir, fileName, NULL);
+	const char * absPath = CPLFormFilename(dir, fileName, nullptr);
 	return absPath;
 }
 
 char ** GetFilesPath(char * dir, char ** files)
 {
-	char ** paths = NULL;
+	char ** paths = nullptr;
 
 	for (int i = 0; i < CSLCount(files); i++)
 	{
@@ -60,15 +63,16 @@ char ** GetFilesPath(char * dir, char ** files)
 char ** GetFiles(char * dir)
 {
 	char ** files = GetFilesName(dir);
+	ON_SCOPE_EXIT([&]{CSLDestroy(files); });
+
 	char ** result = GetFilesPath(dir, files);
 
-	CSLDestroy(files);
 	return result;
 }
 
 char ** GetBaseFiles(char ** files)
 {
-	char ** result = NULL;
+	char ** result = nullptr;
 
 	for (int i = 0; i < CSLCount(files); i++)
 	{
@@ -81,37 +85,32 @@ char ** GetBaseFiles(char ** files)
 char ** GetSources(char * dir, char ** files)
 {
 	char ** baseFiles = GetBaseFiles(files);
+	ON_SCOPE_EXIT([&]{CSLDestroy(baseFiles); });
+
 	char ** sources = GetFilesPath(dir, baseFiles);
 
-	CSLDestroy(baseFiles);
 	return sources;
 }
 
 OGRGeometry * GeometryFromRing(std::list<Point> & ring)
 {
-	OGRLinearRing * ogrRing = new OGRLinearRing();
-	OGRGeometry * ogrGeometry = NULL;
-	OGRPolygon * ogrPolygon = new OGRPolygon();
+	auto ogrRing = new OGRLinearRing();
+	auto ogrPolygon = new OGRPolygon();
 
-	std::list<Point>::iterator first = ring.begin();
-
-	for (std::list<Point>::iterator it = ring.begin(); it != ring.end(); it++)
-	{
-		ogrRing->addPoint(it->getX(), it->getY());
-	}
+	std::for_each(std::begin(ring), std::end(ring),
+		[&](Point it){ogrRing->addPoint(it.getX(), it.getY()); });
 
 	ogrPolygon->addRingDirectly(ogrRing);
 
-	ogrGeometry = ogrPolygon;
-	return ogrGeometry;
+	return ogrPolygon;
 }
 
 CPLErr Txt2Any(const char * txt, const char * shp, Option opt)
 {
-	Txt txtfile(txt, opt.x_column, opt.y_column);
+	Txt txtfile(txt, opt);
 	std::list<Point> ring = txtfile.getRing();
 
-	OGRGeometry * geo = GeometryFromRing(ring);
+	auto geo = GeometryFromRing(ring);
 
 	Any shpfile(shp, opt.format);
 	shpfile.AddGeometry(geo);
@@ -122,7 +121,10 @@ CPLErr Txt2Any(const char * txt, const char * shp, Option opt)
 CPLErr BatchTxt(char * idir, char * odir, Option opt)
 {
 	char ** files = GetFiles(idir);
+	ON_SCOPE_EXIT([&]{CSLDestroy(files); });
+
 	char ** shps = GetSources(odir, files);
+	ON_SCOPE_EXIT([&]{CSLDestroy(shps); });
 
 	CPLErr err = CE_None;
 
@@ -138,7 +140,5 @@ CPLErr BatchTxt(char * idir, char * odir, Option opt)
 
 	printf("OK");
 
-	CSLDestroy(files);
-	CSLDestroy(shps);
 	return err;
 }

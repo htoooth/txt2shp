@@ -1,4 +1,5 @@
 #include "Txt.h"
+#include "ScopeGuard.h"
 
 /// convert char to char point
 /// char to char*
@@ -12,11 +13,11 @@ FILE * OpenTxt(const char * fileName)
 	return VSIFOpen(fileName, "r");
 }
 
-Txt::Txt(const char * fileName, int x, int y): x(x), y(y)
+Txt::Txt(const char * fileName, Option opt)
 {
 	fp = OpenTxt(fileName);
 
-	if (fp != NULL)
+	if (fp != nullptr)
 	{
 		const char * first = CPLReadLine(fp);
 		seperator = CSVDetectSeperator(first);
@@ -30,10 +31,11 @@ Txt::Txt(const char * fileName, int x, int y): x(x), y(y)
 Point * Txt::ReadOnePoint()
 {
 	char ** values = CSVReadParseLine2(fp, seperator);
+	ON_SCOPE_EXIT([&]{CSLDestroy(values); });
 
-	if (values == NULL)
+	if (values == nullptr)
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	return new Point(CPLAtof(values[x]), CPLAtof(values[y]));
@@ -46,14 +48,14 @@ std::list<Point> Txt::getRing()
 	for (;;)
 	{
 		Point * point = ReadOnePoint();
+		ON_SCOPE_EXIT([&]{delete point; });
 
-		if (point == NULL)
+		if (point == nullptr)
 		{
 			break;
 		}
 
-		ring.push_back(Point(*point));
-		delete point;
+		ring.push_back(*point);
 	}
 
 	return ring;
@@ -61,8 +63,10 @@ std::list<Point> Txt::getRing()
 
 Txt::~Txt()
 {
-	if (fp != NULL)
+	if (fp != nullptr)
 	{
 		VSIFClose(fp);
 	}
+
+	CSLDestroy(fields);
 }
