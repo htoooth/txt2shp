@@ -4,6 +4,6 @@
 
 #include "common.h"
 
-CPLErr BatchTxt(char * idir, char * odir, Option opt);
+CPLErr BatchTxt(const char * idir, const char * odir, Option opt);
 
 #endif

@@ -24,7 +24,7 @@ bool CheckForExtension(const char * file, const char * ext)
 	return true;
 }
 
-char ** GetFilesName(char * dir)
+char ** GetFilesName(const char * dir)
 {
 	char ** file = VSIReadDir(dir);
 	ON_SCOPE_EXIT([&]{CSLDestroy(file); });
@@ -42,25 +42,25 @@ char ** GetFilesName(char * dir)
 	return result;
 }
 
-const char * GetAbsPath(char * dir, char * fileName)
+const char * GetAbsPath(const char * dir, const char * fileName)
 {
 	const char * absPath = CPLFormFilename(dir, fileName, nullptr);
 	return absPath;
 }
 
-char ** GetFilesPath(char * dir, char ** files)
+char ** GetFilesPath(const char * dir, char ** files)
 {
 	char ** paths = nullptr;
 
-	for (int i = 0; i < CSLCount(files); i++)
+	for (int i = 0; i < CSLCount(const_cast<char **>(files)); i++)
 	{
-		paths = CSLAddString(paths, GetAbsPath(dir, files[i]));
+		paths = CSLAddString(paths, GetAbsPath(dir,files[i]));
 	}
 
 	return paths;
 }
 
-char ** GetFiles(char * dir)
+char ** GetFiles(const char * dir)
 {
 	char ** files = GetFilesName(dir);
 	ON_SCOPE_EXIT([&]{CSLDestroy(files); });
@@ -74,7 +74,7 @@ char ** GetBaseFiles(char ** files)
 {
 	char ** result = nullptr;
 
-	for (int i = 0; i < CSLCount(files); i++)
+	for (int i = 0; i < CSLCount(const_cast<char **>(files)); i++)
 	{
 		result = CSLAddString(result, CPLGetBasename(files[i]));
 	}
@@ -82,7 +82,7 @@ char ** GetBaseFiles(char ** files)
 	return result;
 }
 
-char ** GetSources(char * dir, char ** files)
+char ** GetSources(const char * dir, char ** files)
 {
 	char ** baseFiles = GetBaseFiles(files);
 	ON_SCOPE_EXIT([&]{CSLDestroy(baseFiles); });
@@ -92,7 +92,7 @@ char ** GetSources(char * dir, char ** files)
 	return sources;
 }
 
-OGRGeometry * GeometryFromRing(std::list<Point> & ring)
+OGRGeometry * GeometryFromRing(const std::list<Point> & ring)
 {
 	auto ogrRing = new OGRLinearRing();
 	auto ogrPolygon = new OGRPolygon();
@@ -118,7 +118,7 @@ CPLErr Txt2Any(const char * txt, const char * shp, Option opt)
 	return CE_None;
 }
 
-CPLErr BatchTxt(char * idir, char * odir, Option opt)
+CPLErr BatchTxt(const char * idir, const char * odir, Option opt)
 {
 	char ** files = GetFiles(idir);
 	ON_SCOPE_EXIT([&]{CSLDestroy(files); });
