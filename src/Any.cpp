@@ -1,9 +1,9 @@
 #include "Any.h"
 #include "ogrformat.h"
 
-Any::Any(const char * fileName, const char * format)
+Any::Any(const char * fileName, Option opt)
 {
-	ds = VectorCreate(format, fileName);
+	ds = VectorCreate(opt.format, fileName);
 	layer = ds->CreateLayer(CPLGetBasename(fileName), NULL, wkbUnknown);
 	DefaultDefn();
 }

@@ -3,6 +3,7 @@
 #define COMMON_H_INCLUDE
 
 #include <list>
+#include <memory>
 
 #include <cpl_vsi.h>
 #include <cpl_error.h>
@@ -20,6 +21,6 @@
 #include "Option.h"
 #include "ogrformat.h"
 
-typedef OGRPoint Point;
+typedef std::shared_ptr<OGRPoint> Point;
 
 #endif

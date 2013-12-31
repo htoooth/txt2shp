@@ -12,7 +12,7 @@ public:
 	std::list<Point> getRing();
 
 private:
-	Point * ReadOnePoint();
+    Point ReadOnePoint();
 
 	FILE * fp;
 	char  seperator;

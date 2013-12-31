@@ -98,7 +98,7 @@ OGRGeometry * GeometryFromRing(std::list<Point> & ring)
 	auto ogrPolygon = new OGRPolygon();
 
 	std::for_each(std::begin(ring), std::end(ring),
-		[&](Point it){ogrRing->addPoint(it.getX(), it.getY()); });
+		[&](Point it){ogrRing->addPoint(it->getX(), it->getY()); });
 
 	ogrPolygon->addRingDirectly(ogrRing);
 
@@ -112,7 +112,7 @@ CPLErr Txt2Any(const char * txt, const char * shp, Option opt)
 
 	auto geo = GeometryFromRing(ring);
 
-	Any shpfile(shp, opt.format);
+	Any shpfile(shp, opt);
 	shpfile.AddGeometry(geo);
 
 	return CE_None;
